@@ -1,1 +1,1 @@
-The esp32 reads the 4 mics using the I2S channels, which it is sent to the serial.
+The firmware reads four microphones across two I2S channels, decodes the audio into 32-bit format, and streams the data over Serial for processing.
