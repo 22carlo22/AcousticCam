@@ -1,11 +1,11 @@
 # ESP32 Acoustic Camera
 
-My objective is to create simple acoustic camera using esp32, that is affordable and manageble to build by a hobbyist.  It will compose of the following:
+My objective is to create simple acoustic camera using esp32, that is affordable and manageable to build by a hobbyist.  It will compose of the following:
 - $25 ESP32 CAM Dev Board 
 - $20 LCD Display Module IPS Screen 240×320 
 - $20 4pcs INMP441 Omnidirectional Microphone Module
 
-Note: this is still work in progress. Right now, the mics are being read and syncronized by the esp32, which is sent serially to a device (ie. matlab) for processing the heavy calculations. Here is the prototype, 
+Note: this is still a work in progress. The ESP32 currently reads and synchronizes the mic data before sending it serially to a host device (like MATLAB) for the calculations. Here is the prototype, 
 
 ![PXL_20260406_221517308](https://github.com/user-attachments/assets/636ea669-2af8-4f88-829e-7a58ab6031be)
 
