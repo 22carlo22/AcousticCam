@@ -15,7 +15,7 @@ In this test, I use an ear bud to produce a 2KHz.
 
 ![GIF_20260407_001901_685](https://github.com/user-attachments/assets/2f5d6e8a-2f1b-4da5-b624-e3df61f7b9f6)
 
-April 20: The script can now pinpoint the location of various frequency. Now you can now locate more than one sound source. 
+April 20: The script can now pinpoint the location of various frequency; it can now locate more than one sound source! 
 
 <img width="492" height="277" alt="GIF_20260420_210139_500" src="https://github.com/user-attachments/assets/f1701a3e-be62-45ef-97c3-9c5914c32b69" />
 
