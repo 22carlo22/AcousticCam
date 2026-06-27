@@ -4,10 +4,10 @@ Right now, the code flashed onto the ESP32 chip has two simple jobs:
 2. It turns on the attached camera and streams the video out wirelessly.
 
 # Parts 
--Freenove ESP32-S3 Cam Board: This is the main "brain" of the project. I chose this specific chip because it has a built-in slot for a camera, and it has plenty of extra pin connectors. This means I can easily expand the project later by plugging in hardware like a control buttons. Most importantly, it has two independent sound accelerators inside it, which is exactly what lets us run up to 4 digital microphones at once.
--INMP441 Digital Microphones (4 pieces): These are the ears of the project. I picked them because they are small and budget-friendly (I bought a 4-pack on Amazon for around $20 CAD). Because they send pure digital sound signals directly to the main chip, we don't have to worry about static or background electrical noise messing with our audio wires.
+- Freenove ESP32-S3 Cam Board: This is the main "brain" of the project. I chose this specific chip because it has a built-in slot for a camera, and it has plenty of extra pin connectors. This means I can easily expand the project later by plugging in hardware like a control buttons. Most importantly, it has two independent sound accelerators inside it, which is exactly what lets us run up to 4 digital microphones at once.
+- INMP441 Digital Microphones (4 pieces): These are the ears of the project. I picked them because they are small and budget-friendly (I bought a 4-pack on Amazon for around $20 CAD). Because they send pure digital sound signals directly to the main chip, we don't have to worry about static or background electrical noise messing with our audio wires.
 
-<img width="2298" height="3037" alt="574454858-636ea669-2af8-4f88-829e-7a58ab6031be" src="https://github.com/user-attachments/assets/acc8a7a5-de29-495e-8e95-80a89d772424" />
+<img width="3130" height="3600" alt="PXL_20260624_200847092" src="https://github.com/user-attachments/assets/43b55cfd-d61b-4e5c-9dd5-6755f08ddd35" />
 
 # How does it work? 
 To locate exactly where a sound is coming from, all four microphones must be perfectly synchronized down to the microsecond. The ESP32 handles this by splitting the microphones into pairs: Microphones 1 and 2 plug into the first audio peripheral (I2S0), while Microphones 3 and 4 connect to the second one (I2S1). To ensure every microphone takes a snapshot of the sound at the exact same instant, the system uses a master-slave clock configuration. By setting I2S0 as the master clock and forcing I2S1 to act as its slave, the second audio bus mirrors the first one's timing pulses perfectly.
