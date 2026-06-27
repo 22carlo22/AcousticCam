@@ -39,7 +39,7 @@ $$\text{BlobFilter}(x, y, f) = \max\big(\text{NormalizedGrid}(x, y, f) - 0.95, 0
 $$\text{SharpenedGrid}(x, y, f) = \frac{\text{BlobFilter}(x, y, f)}{1.0 - 0.95}$$
 
 ## FOV Gating (Field-of-View Filtering)
-The microphones can hear in all directions ($360^\circ$), but our camera lens can only see what is directly in front of it. This step looks for the loudest peak of a frequency. If that peak sits on the absolute border frame edge of our scanning grid, it means the sound is coming from behind or to the side of the device. If it is out of sight, the system dynamically mutes it.
+The microphones can hear in all directions ($360^\circ$), but our camera lens can only see what is directly in front of it. This step looks for the loudest peak of a frequency. If that peak sits on the absolute border frame edge of our scanning grid, it means the sound is coming from the side of the device. If it is out of sight, the system dynamically mutes it.
 
 $$\text{PeakCoordinates}(f) = \arg\max_{(x,y)} \big(\text{SharpenedGrid}(x, y, f)\big)$$
 
