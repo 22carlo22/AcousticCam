@@ -25,7 +25,7 @@ We overlay and add the grid calculations from all six microphone pairs together.
 $$\text{AggregateGrid}(x, y, f) = \sum_{p=1}^{6} \text{PairGrid}_p(x, y, f)$$
 
 ## Destructive Filter & Per-Frequency Normalization
-Negative values representing the destructive wave interference are removed; we only care about the constructive interference. The spatial map is then normalized from 0 to 1 across each frequency independently, isolating the true spatial peak of every individual pitch.
+Next we extract the constructive interference. This is done by removing the negative values (destructive interference) and normalizing each frequency component independently.
 
 $$\text{CleanGrid}(x, y, f) = \max\big(\text{AggregateGrid}(x, y, f), 0\big)$$
 
