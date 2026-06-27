@@ -6,16 +6,16 @@ The main purpose of this Python script is to take the raw sound data from the ES
 ## Fourier Transform & Noise Removal
 First, we convert the raw audio into the frequency domain. At the same time, we completely mute any frequencies that match steady background environmental noise, like a room fan or computer hum.
 
-$$\text{X}(f) = \text{FFT}\Big(\text{x}(t) \times \text{HammingWindow}(t)\Big)$$
+$$\text{M}(f) = \text{FFT}\Big(\text{m}(t) \times \text{HammingWindow}(t)\Big)$$
 
-$$\text{If } \big|\text{X}(f)\big| < \text{NoiseBaseline}(f) \implies \text{X}(f) = 0$$
+$$\text{If } \big|\text{M}(f)\big| < \text{NoiseBaseline}(f) \implies \text{M}(f) = 0$$
 
 ## Pairwise GCC-PHAT & Bandpass Filtering
 Next, we calculate the exact timing alignments between different microphone pairs. Since our four microphones are arranged in a physical square, we have a total of 6 unique pairs to cross-examine: (M1-M2), (M1-M3), (M4-M2), (M4-M3), (M1-M4), and (M3-M2).
 
 For every single pair, we apply a bandpass filter based on the physical distance between the two mic to prevent spatial aliasing or ghost frequencies. Then, we calculate how well the actual phase aligns with the theoretical phase for a paticular (x, y) coordinate.
 
-$$\text{PairGrid}(x, y, f) = \text{RealPart} \left( \text{X}_1(f) \times \overline{\text{X}_2(f)} \times \text{BandpassFilter}(f) \times \text{SteeringVector}(x, y, f) \right)$$
+$$\text{PairGrid}(x, y, f) = \text{RealPart} \left( \text{M}_1(f) \times \overline{\text{M}_2(f)} \times \text{BandpassFilter}(f) \times \text{SteeringVector}(x, y, f) \right)$$
 
 Note: The SteeringVector is a mathematical formula that predicts exactly how long a sound wave should take to travel to each microphone pair from any given horizontal angle (x) and vertical angle (y).
 
