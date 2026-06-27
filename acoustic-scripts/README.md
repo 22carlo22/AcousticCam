@@ -13,10 +13,9 @@ $$\text{If } \big|\text{FrequencyWaves}(f)\big| < \text{NoiseBaseline}(f) \impli
 ## Pairwise GCC-PHAT & Bandpass Filtering
 Next, we calculate the exact timing alignments between different microphone pairs. Since our four microphones are arranged in a physical square, we have a total of 6 unique pairs to cross-examine:
 
-M1 ─────── M2
-  │          │
-  │          │
-  M3 ─────── M4
+M1──M2
+│    |
+M3──M4
 Pairs: (M1-M2), (M1-M3), (M4-M2), (M4-M3), (M1-M4), (M3-M2)
 
 For every single pair, we apply a digital bandpass filter matched to the physical distance between the two mics (this prevents "spatial aliasing" or ghost frequencies). Then, we calculate how well the sound phases match up for every single virtual (x, y) coordinate on our visual tracking grid.
