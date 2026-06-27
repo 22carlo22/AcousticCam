@@ -35,6 +35,7 @@ $$\text{NormalizedGrid}(x, y, f) = \frac{\text{CleanGrid}(x, y, f)}{\max_{(x,y)}
 Because four microphones naturally generate wide, blurry sound clouds rather than sharp points, we apply a strict threshold filter to sharpen our tracking resolution. We zero out any pixels that fall below the top 5% of energy, turning a blurry cloud into a tight pinpoint dot.
 
 $$\text{BlobFilter}(x, y, f) = \max\big(\text{NormalizedGrid}(x, y, f) - 0.95, 0\big)$$
+
 $$\text{SharpenedGrid}(x, y, f) = \frac{\text{BlobFilter}(x, y, f)}{1.0 - 0.95}$$
 
 ## FOV Gating (Field-of-View Filtering)
@@ -42,7 +43,11 @@ The microphones can hear in all directions ($360^\circ$), but our camera lens ca
 
 $$\text{PeakCoordinates}(f) = \arg\max_{(x,y)} \big(\text{SharpenedGrid}(x, y, f)\big)$$
 
-$$\text{GatedGrid}(x, y, f) = \begin{cases} 0, & \text{if } \text{PeakCoordinates}(f) \text{ lands on the grid borders} \\ \text{SharpenedGrid}(x, y, f), & \text{otherwise} \end{cases}$$
+$$\text{GatedGrid}(x, y, f) = 
+\begin{cases} 
+0, & \text{if } \text{PeakCoordinates}(f) \text{ lands on the grid borders} \\ 
+\text{SharpenedGrid}(x, y, f), & \text{otherwise} 
+\begin{cases}$$
 
 ## Loudness Power Scaling
 We then scale the tracking grid by the power of the audio. This ensures a loud noise generates a deep, bright hotspot while a quiet whisper stays faint.
@@ -53,7 +58,9 @@ $$\text{ScaledGrid}(x, y, f) = \text{GatedGrid}(x, y, f) \times \text{AvgPower}(
 
 ## Frequency Integration
 In this final step, we collapse our 3D frequency matrix into a flat 2D surface map by summing up the calculated energy from all valid frequency channels at each specific (x,y) coordinate.
+
 $$\text{IntensityMap}(x, y) = \sum_{\text{all } f} \text{ScaledGrid}(x, y, f)$$
+
 $$\text{IntensityMapNormal}(x, y) = \frac{\text{IntensityMap}(x, y)}{\max \big(\text{IntensityMap}\big)}$$
 
 This scales our absolute final image grid seamlessly between 0 and 1. This clean range is passed straight to our color engine, where 1 renders as a bright red hotspot over the live camera frame, marking the exact source of the sound!
