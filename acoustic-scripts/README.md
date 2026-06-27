@@ -13,7 +13,7 @@ $$\text{If } \big|\text{FrequencyWaves}(f)\big| < \text{NoiseBaseline}(f) \impli
 ## Pairwise GCC-PHAT & Bandpass Filtering
 Next, we calculate the exact timing alignments between different microphone pairs. Since our four microphones are arranged in a physical square, we have a total of 6 unique pairs to cross-examine: (M1-M2), (M1-M3), (M4-M2), (M4-M3), (M1-M4), and (M3-M2).
 
-For every single pair, we apply a bandpass filter matched to the physical distance between the two mic preventing "spatial aliasing" or ghost frequencies. Then, we calculate how well the sound phases match up for every single virtual (x, y) coordinate on our visual tracking grid.
+For every single pair, we apply a bandpass filter based on the physical distance between the two mic to prevent spatial aliasing or ghost frequencies. Then, we calculate how well the actual phase aligns with the theoretical phase for a paticular (x, y) coordinate.
 
 $$\text{PairGrid}(x, y, f) = \text{RealPart} \left( \text{Phase}_1(f) \times \overline{\text{Phase}_2(f)} \times \text{BandpassFilter}(f) \times \text{SteeringVector}(x, y, f) \right)$$
 
@@ -25,7 +25,7 @@ We overlay and add the grid calculations from all six microphone pairs together.
 $$\text{AggregateGrid}(x, y, f) = \sum_{p=1}^{6} \text{PairGrid}_p(x, y, f)$$
 
 ## Destructive Filter & Per-Frequency Normalization
-We drop all negative numbers because they just represent out-of-phase destructive interference (places where sound waves canceled each other out). Then, we normalize the spatial grid from 0 to 1 independently for each separate frequency column. This gives us the true, isolated position of every single individual pitch.
+Negative values representing the destructive wave interference are removed; we only care about the constructive interference. The spatial map is then normalized from 0 to 1 across each frequency independently, isolating the true spatial peak of every individual pitch.
 
 $$\text{CleanGrid}(x, y, f) = \max\big(\text{AggregateGrid}(x, y, f), 0\big)$$
 
@@ -38,15 +38,17 @@ $$\text{BlobFilter}(x, y, f) = \max\big(\text{NormalizedGrid}(x, y, f) - 0.95, 0
 $$\text{SharpenedGrid}(x, y, f) = \frac{\text{BlobFilter}(x, y, f)}{1.0 - 0.95}$$
 
 ## FOV Gating (Field-of-View Filtering)
-Microphones hear in all directions ($360^\circ$), but our camera lens can only see what is directly in front of it. This step looks for the loudest peak index of a frequency. If that peak sits on the absolute border frame edge of our scanning grid, it means the sound is coming from behind or to the side of the device. If it is out of sight, the system dynamically mutes it.
+The microphones can hear in all directions ($360^\circ$), but our camera lens can only see what is directly in front of it. This step looks for the loudest peak of a frequency. If that peak sits on the absolute border frame edge of our scanning grid, it means the sound is coming from behind or to the side of the device. If it is out of sight, the system dynamically mutes it.
 
 $$\text{PeakCoordinates}(f) = \arg\max_{(x,y)} \big(\text{SharpenedGrid}(x, y, f)\big)$$
+
 $$\text{GatedGrid}(x, y, f) = \begin{cases} 0, & \text{if } \text{PeakCoordinates}(f) \text{ lands on the grid borders} \\ \text{SharpenedGrid}(x, y, f), & \text{otherwise} \end{cases}$$
 
 ## Loudness Power Scaling
-To make sure the camera's visual brightness actually matches real-world volume, we scale the tracking grid by the raw average electrical power (volume) of the audio signals. This ensures a loud noise generates a deep, bright hotspot while a quiet whisper stays faint.
+We then scale the tracking grid by the power of the audio. This ensures a loud noise generates a deep, bright hotspot while a quiet whisper stays faint.
 
 $$\text{AvgPower}(f) = \frac{\big|X_1(f)\big|^2 + \big|X_2(f)\big|^2 + \big|X_3(f)\big|^2 + \big|X_4(f)\big|^2}{4}$$
+
 $$\text{ScaledGrid}(x, y, f) = \text{GatedGrid}(x, y, f) \times \text{AvgPower}(f)$$
 
 ## Frequency Integration
