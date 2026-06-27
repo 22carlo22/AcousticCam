@@ -18,8 +18,8 @@ Here is what the current prototype looks like, along with a real test tracking a
 https://github.com/user-attachments/assets/54ef5966-bea8-424f-9d58-3ecbc37549db
 
 # Technical Stuff:
-- [Firmware](./acoustic-firmware/README.md) – Read this to see how the ESP32 works.
-- [The Math Behind the Camera](./acoustic-scripts/README.md) – Read this to see the simple formulas used to track sound waves in space, and techniques to reduce "ghost" sounds.
+- [Firmware](./acoustic-firmware/README.md) 
+- [The Math Behind the Camera](./acoustic-scripts/README.md) 
 
 # Next of Agenda: 
 Right now, the ESP32 just collects the data, and my laptop does all the heavy math calculations in Python. My next big goal is to move all of that math processing directly onto the tiny ESP32 chip itself.
