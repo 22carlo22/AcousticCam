@@ -61,4 +61,4 @@ In this final step, we collapse our 3D frequency matrix into a flat 2D surface m
 
 $$\text{IntensityMap}(x, y) = \sum_{\text{all } f} \text{ScaledGrid}(x, y, f)$$
 
-$$\text{IntensityMapNormal}(x, y) = \frac{\text{IntensityMap}(x, y)}{\max \big(\text{IntensityMap}\big + \epsilon)}$$
+$$\text{IntensityMapNormal}(x, y) = \frac{\text{IntensityMap}(x, y)}{\max \big(\text{IntensityMap}\big) + \epsilon}$$
