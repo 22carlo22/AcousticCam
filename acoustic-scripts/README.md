@@ -50,7 +50,7 @@ $$\text{GatedGrid}(x, y, f) =
 \end{cases}$$
 
 ## Loudness Power Scaling
-We then scale the tracking grid by the power of the audio. This ensures a loud noise generates a deep, bright hotspot while a quiet whisper stays faint.
+We then scale the grid by the power of the audio. This ensures a loud noise generates a deep, bright hotspot while a quiet whisper stays faint.
 
 $$\text{AvgPower}(f) = \frac{\big|X_1(f)\big|^2 + \big|X_2(f)\big|^2 + \big|X_3(f)\big|^2 + \big|X_4(f)\big|^2}{4}$$
 
@@ -62,5 +62,3 @@ In this final step, we collapse our 3D frequency matrix into a flat 2D surface m
 $$\text{IntensityMap}(x, y) = \sum_{\text{all } f} \text{ScaledGrid}(x, y, f)$$
 
 $$\text{IntensityMapNormal}(x, y) = \frac{\text{IntensityMap}(x, y)}{\max \big(\text{IntensityMap}\big)}$$
-
-This scales our absolute final image grid seamlessly between 0 and 1. This clean range is passed straight to our color engine, where 1 renders as a bright red hotspot over the live camera frame, marking the exact source of the sound!
