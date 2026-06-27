@@ -11,16 +11,11 @@ $$\text{FrequencyWaves}(f) = \text{FFT}\Big(\text{RawAudio}(t) \times \text{Hamm
 $$\text{If } \big|\text{FrequencyWaves}(f)\big| < \text{NoiseBaseline}(f) \implies \text{FrequencyWaves}(f) = 0$$
 
 ## Pairwise GCC-PHAT & Bandpass Filtering
-Next, we calculate the exact timing alignments between different microphone pairs. Since our four microphones are arranged in a physical square, we have a total of 6 unique pairs to cross-examine:
+Next, we calculate the exact timing alignments between different microphone pairs. Since our four microphones are arranged in a physical square, we have a total of 6 unique pairs to cross-examine: (M1-M2), (M1-M3), (M4-M2), (M4-M3), (M1-M4), and (M3-M2).
 
-M1──M2
-│    |
-M3──M4
-Pairs: (M1-M2), (M1-M3), (M4-M2), (M4-M3), (M1-M4), (M3-M2)
+For every single pair, we apply a bandpass filter matched to the physical distance between the two mic preventing "spatial aliasing" or ghost frequencies. Then, we calculate how well the sound phases match up for every single virtual (x, y) coordinate on our visual tracking grid.
 
-For every single pair, we apply a digital bandpass filter matched to the physical distance between the two mics (this prevents "spatial aliasing" or ghost frequencies). Then, we calculate how well the sound phases match up for every single virtual (x, y) coordinate on our visual tracking grid.
-
-$$\text{PairGrid}(x, y, f) = \text{RealPart}\Big(\text{Phase}_1(f) \times \overline{\text{Phase}_2(f)} \times \text{BandpassFilter}(f) \times \text{SteeringVector}(x, y, f)\Big)$$
+$$\text{PairGrid}(x, y, f) = \text{RealPart} \left( \text{Phase}_1(f) \times \overline{\text{Phase}_2(f)} \times \text{BandpassFilter}(f) \times \text{SteeringVector}(x, y, f) \right)$$
 
 Note: The SteeringVector is a mathematical formula that predicts exactly how long a sound wave should take to travel to each microphone pair from any given horizontal angle (x) and vertical angle (y).
 
