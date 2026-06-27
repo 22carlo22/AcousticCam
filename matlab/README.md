@@ -1,3 +1,1 @@
-This simulates the acoustic camera's logic. As the esp32 supplies data through the serial,  the script performs a Delay-and-Sum Beamformer  to determine the sound location and displays it in a 3d graph.
-
-The code has now been updated to include frequency spectrum heat map, allowing to locate more than one sound source at once. 
+These MATLAB scripts are now deprecated. This was actually the very first script I wrote to get beamforming up and running! It is kept here as a historical record of the project's origins, but all the up-to-date, working code has moved over to the [`Python version`](../acoustic-scripts/)
