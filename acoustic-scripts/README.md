@@ -15,7 +15,7 @@ Next, we calculate the exact timing alignments between different microphone pair
 
 For every single pair, we apply a bandpass filter based on the physical distance between the two mic to prevent spatial aliasing or ghost frequencies. Then, we calculate how well the actual phase aligns with the theoretical phase for a paticular (x, y) coordinate.
 
-$$\text{PairGrid}(x, y, f) = \text{RealPart} \left( \text{Phase}_1(f) \times \overline{\text{Phase}_2(f)} \times \text{BandpassFilter}(f) \times \text{SteeringVector}(x, y, f) \right)$$
+$$\text{PairGrid}(x, y, f) = \text{RealPart} \left( \text{X}_1(f) \times \overline{\text{X}_2(f)} \times \text{BandpassFilter}(f) \times \text{SteeringVector}(x, y, f) \right)$$
 
 Note: The SteeringVector is a mathematical formula that predicts exactly how long a sound wave should take to travel to each microphone pair from any given horizontal angle (x) and vertical angle (y).
 
