@@ -6,9 +6,9 @@ The main purpose of this Python script is to take the raw sound data from the ES
 ## Fourier Transform & Noise Removal
 First, we convert the raw audio into the frequency domain. At the same time, we completely mute any frequencies that match steady background environmental noise, like a room fan or computer hum.
 
-$$\text{FrequencyWaves}(f) = \text{FFT}\Big(\text{RawAudio}(t) \times \text{HammingWindow}(t)\Big)$$
+$$\text{X}(f) = \text{FFT}\Big(\text{x}(t) \times \text{HammingWindow}(t)\Big)$$
 
-$$\text{If } \big|\text{FrequencyWaves}(f)\big| < \text{NoiseBaseline}(f) \implies \text{FrequencyWaves}(f) = 0$$
+$$\text{If } \big|\text{X}(f)\big| < \text{NoiseBaseline}(f) \implies \text{X}(f) = 0$$
 
 ## Pairwise GCC-PHAT & Bandpass Filtering
 Next, we calculate the exact timing alignments between different microphone pairs. Since our four microphones are arranged in a physical square, we have a total of 6 unique pairs to cross-examine: (M1-M2), (M1-M3), (M4-M2), (M4-M3), (M1-M4), and (M3-M2).
