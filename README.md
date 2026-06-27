@@ -20,7 +20,7 @@ https://github.com/user-attachments/assets/54ef5966-bea8-424f-9d58-3ecbc37549db
 # Technical Stuff:
 - [How the esp32 talks to the script](./acoustic-firmware/README.md) 
 - [Math behind the camera](./acoustic-scripts/README.md)
-- [Previous prototype](./docs/log.ms)
+- [Previous prototype](./docs/logs.md)
 
 # Next of Agenda: 
 Right now, the ESP32 just collects the data, and my laptop does all the heavy math calculations in Python. My next big goal is to move all of that math processing directly onto the tiny ESP32 chip itself.
