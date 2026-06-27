@@ -47,7 +47,7 @@ $$\text{GatedGrid}(x, y, f) =
 \begin{cases} 
 0, & \text{if } \text{PeakCoordinates}(f) \text{ lands on the grid borders} \\ 
 \text{SharpenedGrid}(x, y, f), & \text{otherwise} 
-\begin{cases}$$
+\end{cases}$$
 
 ## Loudness Power Scaling
 We then scale the tracking grid by the power of the audio. This ensures a loud noise generates a deep, bright hotspot while a quiet whisper stays faint.
