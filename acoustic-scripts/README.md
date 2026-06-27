@@ -1,8 +1,7 @@
 # Description
-What is the purpose?
 The main purpose of this Python script is to take the raw sound data from the ESP32, handle all the heavy mathematical calculations, and draw the visual sound heatmap. When you only use four microphones, the system is highly prone to catching "ghost sounds" or false mathematical reflections (artifacts). Because of this, the calculation became more complex than I expected.
 
-# Math Stuff
+# How does it work? 
 
 ## Fourier Transform & Noise Removal
 First, we convert the raw audio snapshots from time-domain waves into individual frequency pitches. At the same time, we completely mute any pitches that match steady background environmental noise, like a room fan or computer hum.
