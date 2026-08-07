@@ -1,1 +1,1 @@
-decsription
+These MATLAB scripts are now deprecated. This was actually the very first script I wrote to get beamforming up and running! It is kept here as a historical record of the project's origins, but all the up-to-date, working code has moved over to the python version.
