@@ -5,12 +5,19 @@ Below is the planned hardware list and project design.
 # Parts 
 
 1. Freenove ESP32-S3 CAM Board: Includes a built-in camera interface and 2 available hardware I2S peripherals. Also, it is equipped with SIMD!
+
 <img width="276" height="456" alt="unnamed" src="https://github.com/user-attachments/assets/013bf5b2-034d-4069-9390-df3399246dda" />
+
 2. 4x INMP441: supports I2S protocol.
+
 <img width="193" height="155" alt="unnamed (1)" src="https://github.com/user-attachments/assets/58bdedbd-dcb6-480f-b1e1-395d43c584f2" />
+
 3. Waveshare 2inch LCD Display: supports SPI communication.
+
 <img width="272" height="225" alt="unnamed (2)" src="https://github.com/user-attachments/assets/5e713609-568c-4c80-adcf-87ff1bd98039" />
+
 4. Rotary Encoder: Provides physical user controls.
+
 <img width="285" height="293" alt="unnamed (3)" src="https://github.com/user-attachments/assets/4c0de1c2-b756-465b-8eb9-bfecf3c7e451" />
 
 # Plan 
