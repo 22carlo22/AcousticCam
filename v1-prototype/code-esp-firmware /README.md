@@ -29,7 +29,7 @@ This ESP32 handles three main tasks:
 # How does it work?
 Here is the basic data flow,
 
-<img width="512" height="198" alt="unnamed (7)" src="https://github.com/user-attachments/assets/f1770118-4731-4862-80de-caa3aa84848b" />
+<img width="832" height="322" alt="flow drawio (2)" src="https://github.com/user-attachments/assets/bbef40de-3260-43a3-842c-52453bb64119" />
 
 First, the ESP32 splits the microphones into two pairs. Microphones 1 and 2 connect to the first audio channel (I2S0), and Microphones 3 and 4 connect to the second (I2S1). To keep all four microphones perfectly synchronized, I2S0 acts as the master clock and drives the timing for I2S1.
 
