@@ -27,7 +27,7 @@ $$\text{BlobFilter}(x, y, k) = \max\Big(\text{SpatialSum}(x, y, k) - T_{\text{bl
 $$\text{SharpenedGrid}(x, y, k) = \frac{\text{BlobFilter}(x, y, k)}{1.0 - T_{\text{blob}} + \epsilon}$$
 
 ## 5. Frequency Integration
-We collapse our 3D grid (space + pitch) into a flat 2D surface map by summing up all the frequency:
+We collapse our 3D grid into a flat 2D surface map by summing up all the frequency:
 
 $$\text{IntensityMap}(x, y) = \sum_{k=k_{\text{min}}}^{k_{\text{max}}} \text{SharpenedGrid}(x, y, k)$$
 
@@ -42,7 +42,7 @@ We apply a logarithmic to compress loud energy spikes and boost quieter ones. In
 $$\text{LogMap}(x, y) = \log_{10}\Big(\text{SmoothedMap}(x, y) + 1\Big)$$
 
 ## 8. Normalize
-Finally, we scale that LogMap from $0.0$ to $1.0$ (where $1.0$ is the loudest point in the room), allowing us to easily map to color spectrum.
+Finally, we scale it from $0.0$ to $1.0$, allowing us to easily map to color spectrum.
 
 $$\text{NormalizedMap}(x, y) = \frac{\text{LogMap}(x, y)}{\max_{(x,y)}\Big(\text{LogMap}(x,y)\Big) + \epsilon}$$
 
