@@ -22,7 +22,7 @@ $$\text{SpatialSum}(x, y, k) = \frac{1}{6} \sum_{p=1}^{6} \text{PairBeamform}_p(
 ## 4. Spatial Blob Thresholding
 Four microphones naturally produce broad, blurry sound clouds. To sharpen the heatmap, we apply a high-pass threshold ($T_{\text{blob}}$). Any energy below this threshold (ambient background noise and destructive interference) is zeroed out, and the remaining peaks are rescaled from $0$ to $1$.
 
-$$\text{BlobFilter}(x, y, k) = \max\Big(\text{SpatialSum}(x, y, k) - T_{\text{blob}}, \; 0\Big)$$
+$$\text{BlobFilter}(x, y, k) = \max\Big(\text{SpatialSum}(x, y, k) - T_{\text{blob}}, 0\Big)$$
 
 $$\text{SharpenedGrid}(x, y, k) = \frac{\text{BlobFilter}(x, y, k)}{1.0 - T_{\text{blob}} + \epsilon}$$
 
