@@ -34,7 +34,7 @@ Here are a few more acoustic snapshots taken of different objects,
 <img width="314" height="241" alt="Screenshot 2026-07-30 162210" src="https://github.com/user-attachments/assets/bb8039ad-2e64-4c38-866b-16299a09d431" />
 
 ## Quick Navigation
-- [ESP32-to-Python Communication](logs/)
+- [ESP32-to-Python Communication](code-esp-firmware/)
 
 
 
