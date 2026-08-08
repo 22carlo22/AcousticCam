@@ -35,6 +35,10 @@ Here are a few more acoustic snapshots taken of different objects,
 
 ## Quick Navigation
 - [ESP32-to-Python Communication](code-esp32-firmware/README.md#how-does-it-work)
+- [Microphone Array Circuit Diagram](code-esp32-firmware/README.md#circuit-diagram)
+- [Mathematics & Signal Processing](code-python-script/README.md#how-does-it-work)
+- [How to Run the Python Script](code-python-script/README.md#how-to-run)
+- [Previous Prototypes & Iterations](logs/README.md)
 
 
 
