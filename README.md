@@ -3,4 +3,4 @@ An acoustic camera is an awesome tool. It lets you actually see sound layered ov
 
 Project Modules
 1. [V1 Prototype](v1-prototype/) (Python Hybrid): My working setup. The ESP32 handles the camera feed and 4-microphone array, while a host Python script performs the heavy audio processing and heatmap rendering.
-2. [V2 Standalone](v1-standalone/) (In Progress): The ultimate goal. A fully portable, self-contained acoustic camera where the ESP32 handles both audio acquisition and DSP calculations directly on the chip. 
+2. [V2 Standalone](v2-standalone/) (In Progress): The ultimate goal. A fully portable, self-contained acoustic camera where the ESP32 handles both audio acquisition and DSP calculations directly on the chip. 
