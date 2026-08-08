@@ -13,3 +13,11 @@ Once the basic math was proven, my next goal was to split the sound processing s
 
 <img width="492" height="277" alt="581115861-f1701a3e-be62-45ef-97c3-9c5914c32b69" src="https://github.com/user-attachments/assets/819d71fa-0784-4388-abc8-cb8feac08d7a" />
 
+## Early July , 2026
+- Switched from GNU Octave to Python: I started out writing the math scripts in Octave (an open-source MATLAB alternative). But Octave gave me huge headaches when trying to do camera streams due to compatibility issues. Moving the math over to a multi-threaded Python script fixed everything and made it much faster.
+- Upgraded the Main Brain (ESP32-WROVER to ESP32-S3): During early testing, I discovered a major hardware conflict—the older WROVER board shares its internal camera clock lines with one of its I2S peripheral buses. Activating the camera physically disabled two of my microphones. Upgrading to the ESP32-S3 gave me two completely independent I2S buses, allowing all 4 microphones to sample simultaneously alongside the camera.
+- Cleaner Frame & Thinner Wires: I redesigned the physical body of the prototype to be symmetrical and replaced thick jumper wires with thin ones. The previous prototype were actually bouncing sound waves around, creating mini "echoes" that threw off the phase calculations.
+
+https://github.com/user-attachments/assets/3a1db111-f592-4701-8f68-1e2bb4d3ebd6
+
+
