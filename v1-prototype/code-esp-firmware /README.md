@@ -26,7 +26,7 @@ This ESP32 handles three main tasks:
 
 <img width="512" height="267" alt="unnamed (6)" src="https://github.com/user-attachments/assets/b8fbbefd-73ee-4d09-a468-4492c63e7df3" />
 
-# How-does-it-work?
+# How does it work?
 Here is the basic data flow,
 
 <img width="832" height="322" alt="flow drawio (2)" src="https://github.com/user-attachments/assets/bbef40de-3260-43a3-842c-52453bb64119" />
