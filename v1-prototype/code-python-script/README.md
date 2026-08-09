@@ -29,7 +29,7 @@ $$\text{SharpenedGrid}(x, y, k) = \frac{\text{BlobFilter}(x, y, k)}{1.0 - T_{\te
 ## 5. Frequency Integration
 We collapse our 3D grid into a flat 2D surface map by summing up all the frequency:
 
-$$\text{IntensityMap}(x, y) = \sum_{k=k_{\text{min}}}^{k_{\text{max}}} \text{SharpenedGrid}(x, y, k)$$
+$$\text{IntensityMap}(x, y) = \sum_{k} \text{SharpenedGrid}(x, y, k)$$
 
 ## 6. Temporal Moving Average
 To keep the visual overlay steady and prevent high-speed flickering between camera frames, we apply an Exponential Moving Average (EMA) smoothing filter using a smoothing factor $\alpha$:
