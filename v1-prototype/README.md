@@ -1,6 +1,6 @@
 # Description
 
-This project is a cheap, DIY acoustic camera made with ESP32 and just 4 mics to see if a simple setup can actually pinpoint sound on a camera feed. The ESP32 streams raw audio and video over Wi-Fi to a computer running a custom Python script, which handles all the math and draws the sound heatmap. Instead of using pre-made beamforming libraries, I built the DSP code from scratch to learn how it works under the hood. Doing it this way gives me a clear blueprint to optimize the math and translate everything into C++ directly on the [ESP32 later on](../v2-standalone). 
+This project is a cheap, DIY acoustic camera made with ESP32 and just 4 mics. The ESP32 streams raw audio and video over Wi-Fi to a computer running a custom Python script, which handles all the math and draws the sound heatmap. Instead of using pre-made beamforming libraries, I built the DSP code from scratch to learn how it works under the hood. Doing it this way gives me a clear blueprint to optimize the math and translate everything into C++ directly on the [ESP32 later on](../v2-standalone). 
 
 # Updates
 1. I added a simple user interface to tweak settings on the fly. You can set the frequency range to target specific sounds, adjust the smooth setting to stop the heatmap from flickering, tweak the blob control to sharpen the contrast, and turn on the focus feature to restrict sound detection to a small area in the middle of the camera frame.
