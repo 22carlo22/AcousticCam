@@ -29,7 +29,6 @@ My plan uses the ESP32’s dual cores and hardware features to split up tasks so
 To keep this loop running continuously, I will use double buffers using FreeRTOS queues. The timing for each stage breaks down logically: collecting 1024 audio samples at 44.1 kHz takes about 23 ms, capturing a full QVGA RGB picture takes roughly 50 ms, and pushing that finished frame to the TFT screen over SPI takes about 30 ms.
 Because the camera frame capture is our biggest bottleneck at 50 ms, my main target is to keep both the audio math on Core 0 and the heatmap rendering on Core 1 under 50 ms each. As long as the processing steps complete within that window, the entire system will run at a steady 20 fps.
 
-To ensure the calculations run as fast as possible, I will use the esp-dsp library, which relies on custom assembly instructions to take advantage of the ESP32-S3's hardware SIMD vector processing. If floating-point math still turns out to be too slow, my backup plan is to convert the calculations to fixed-point integer math to double the processing speed.
-
+To keep processing as fast as possible, I'll use the esp-dsp library. I'm starting with 32-bit floating-point math to see if it meets the 50 ms target. If floating-point turns out to be too slow, I'll switch strictly to 16-bit integers to take advantage of hardware SIMD vector processing.
 
 
