@@ -42,19 +42,21 @@ To keep the visual overlay steady and prevent high-speed flickering between came
 $$\text{SmoothedMap}_n(x, y, f) = \alpha \times \text{SharpenedGrid}(x, y, f) + (1 - \alpha) \times \text{SmoothedMap}_{n-1}(x, y, f)$$
 
 ## 6. Simplified CLEAN
-In real-world acoustic environments, dominant high-intensity sound sources can mask quieter secondary signals, making them difficult to detect on a heatmap. To solve this, a simplified CLEAN method iteratively targets and subtracts the loudest acoustic peak across frequency bins, allowing weaker underlying sources to emerge.
+In real-world settings, loud sounds can drown out quieter ones, hiding them on a heatmap. The simplified CLEAN method fixes this by finding the loudest sound, subtracting most of its volume, and repeating the process over multiple steps (where $n$ represents the current iteration step) so quieter sounds can show up.
 
-First, broadband energy is integrated across all frequency bins $f$ to create a spatial intensity map, and the spatial coordinates $(\text{peakx}_n, \text{peaky}_n)$ of the dominant sound source are identified.
+First, we set the starting map $\text{Residual}_0$ ($n = 0$) to the initial smoothed data. Then, we combine all sound frequencies into one main map to find where the loudest sound is located for step $n$.
+
+$$\text{Residual}_0(x, y, f) = \text{SmoothedMap}(x, y, f)$$
 
 $$\text{Intensity}_n(x, y) = \sum_{f} \text{Residual}_n(x, y, f)$$
 
 $$(\text{peakx}_n, \text{peaky}_n) = \arg\max_{(x, y)} \text{Intensity}_n(x, y)$$
 
-Next, the frequency spectrum measured at that peak location is scaled by a loop gain ($\text{decay}$) and subtracted from the residual map, where $\text{Residual}_0(x, y, f) = \text{SmoothedMap}(x, y, f)$.
+Next, we take the sound frequencies at that exact spot, shrink them slightly using a `decay` factor, and subtract them to create the updated map for the next iteration ($n + 1$).
 
 $$\text{Residual}_{n+1}(x, y, f) = \text{Residual}_n(x, y, f) - \text{decay} \cdot \text{Residual}_n(\text{peakx}_n, \text{peaky}_n, f)$$
 
-Increasing the iteration depth $n$ repeatedly peels back stronger sources to reveal progressively quieter acoustic signals.
+Repeating this process for higher values of $n$ peels away the strongest sounds to uncover progressively quieter ones.
 
 ## 7.  Logarithmic Scaling
 We apply a logarithmic to compress loud energy spikes and boost quieter ones. In other words, this ensures that faint secondary sounds remain visible alongside loud primary sources. 
@@ -62,8 +64,7 @@ We apply a logarithmic to compress loud energy spikes and boost quieter ones. In
 $$\text{LogMap}(x, y) = \log_{10}\Big(\text{Intensity}(x, y) + 1\Big)$$
 
 ## 8. Normalize
-
-Finally, we scale the values from 0.0 to 1.0 for easy color mapping. We also cap the highest peak in the heatmap as a fallback, preventing the visualization from being ruined by a  massive blob. 
+Finally, we scale the values from 0.0 to 1.0 for easy color mapping. We also cap the highest peak in the heatmap as a fallback to prevent the visualization from being ruined by a  massive blob. 
 
 $$\text{NormalizedMap}(x, y) = \frac{\text{LogMap}(x, y)}{\max_{(x,y)}\Big(\text{LogMap}(x,y)\Big) + \epsilon}$$
 $$\text{PeakMap}(x, y) = \frac{\max(\text{NormalizedMap}(x, y) - \text{peak}, 0)}{1 - \text{peak} + \epsilon}$$
