@@ -19,10 +19,17 @@ We add the grid calculations from all 6 microphone pairs together and average th
 
 $$\text{SpatialSum}(x, y, f) = \frac{1}{6} \sum_{p=1}^{6} \text{PairBeamform}_p(x, y, f)$$
 
-## 4. Temporal Moving Average
+## 4. Spatial Blob Thresholding
+Four microphones naturally produce broad, blurry sound clouds. To sharpen the heatmap, we apply a high-pass threshold ($T_{\text{blob}}$). Any energy below this threshold (ambient background noise and destructive interference) is zeroed out, and the remaining peaks are rescaled from $0$ to $1$.
+
+$$\text{BlobFilter}(x, y, f) = \max\Big(\text{SpatialSum}(x, y, f) - T_{\text{blob}}, 0\Big)$$
+
+$$\text{SharpenedGrid}(x, y, f) = \frac{\text{BlobFilter}(x, y, f)}{1.0 - T_{\text{blob}} + \epsilon}$$
+
+## 5. Temporal Moving Average
 To keep the visual overlay steady and prevent high-speed flickering between camera frames, we apply an Exponential Moving Average (EMA) smoothing filter using a smoothing factor $\alpha$:
 
-$$\text{SmoothedMap}_n(x, y, f) = \alpha \times \text{SpatialSum}(x, y, f) + (1 - \alpha) \times \text{SmoothedMap}_{n-1}(x, y, f)$$
+$$\text{SmoothedMap}_n(x, y, f) = \alpha \times \text{SharpenedGrid}(x, y, f) + (1 - \alpha) \times \text{SmoothedMap}_{n-1}(x, y, f)$$
 
 # How to use? 
 
