@@ -1,32 +1,45 @@
-from config import HALF_SAMPLE, EPSILON, SAMPLES
+import config
 import numpy as np
 
 class Mic:
     """
-    Represents an individual physical microphone node in the array.
-    Handles temporal windowing, Fast Fourier Transform (FFT), and Phase Transform (PHAT) normalization.
+    Represents a single microphone node responsible for processing incoming 
+    audio frame signals via Fast Fourier Transform (FFT).
     """
-    # Precompute Hamming window array: w[n] = 0.54 - 0.46 * cos(2*pi*n / (N-1))
-    HAMMING_WINDOW = np.hamming(SAMPLES)
 
-    def __init__(self, cord: np.ndarray):
+    def __init__(self, pos: tuple[float, float, float], samples=config.AUDIO_SIZE, epsilon=config.EPSILON):
         """
-        :param cord: 3D spatial position vector [X, Y, Z] in meters relative to array origin.
-        """
-        self.cord = cord
+        Initialize microphone spatial properties and internal FFT buffers.
 
-    def putData(self, x: np.ndarray):
+        Parameters:
+            pos (tuple): 3D coordinates (x, y, z) of the microphone.
+            samples (int): Total number of audio samples per frame.
+            epsilon (float): Small offset to prevent division-by-zero during phase normalization.
         """
-        Applies windowing, computes positive-frequency FFT components, and extracts 
-        normalized phase vectors for GCC-PHAT cross-correlation processing.
-        
-        :param x: Raw 1D PCM audio sample slice for single buffer window.
+        # Store pre-calculated constants for fast slicing and windowing
+        self._half_sample = samples // 2
+        self._hamming = np.hamming(samples)  # Pre-computed Hamming window to reduce spectral leakage
+        self._epsilon = epsilon
+
+        # Spatial position vector
+        self.pos = np.array(pos, dtype=float)
+
+        # Output buffers holding the positive frequency components
+        self.mag = np.zeros(self._half_sample, dtype=float)
+        self.phase = np.zeros(self._half_sample, dtype=complex)
+
+    def update(self, x: np.ndarray):
         """
-        # Apply Hamming window to reduce spectral leakage across frame boundaries
-        x_windowed = x * self.HAMMING_WINDOW
-        
-        # Compute 1D Discrete Fourier Transform and retain positive frequencies up to Nyquist limit
-        self.ft = np.fft.fft(x_windowed)[:HALF_SAMPLE] 
-        
-        # Get the phase of each freqeuncy
-        self.X_phase = self.ft / (np.abs(self.ft) + EPSILON)
+        Process an incoming time-domain signal frame and update spectral magnitude and unit phase.
+
+        Parameters:
+            x (np.ndarray): 1D array of raw audio sample amplitudes.
+        """
+
+        x = x * self._hamming
+
+        ft = np.fft.fft(x)[:self._half_sample] 
+
+        self.mag = np.abs(ft)
+
+        self.phase = ft / (self.mag + self._epsilon)

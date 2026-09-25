@@ -1,66 +1,104 @@
-from config import FSAMPLE, VSOUND, SAMPLES, HALF_SAMPLE, FREQ_LOW_CONST
+import config
 import numpy as np
 from Mic import Mic
-from ScannerGrid import ScannerGrid
 
 class PairMics:
     """
-    Models a cross-correlation pair of two microphones.
-    Precomputes steering phase delays across the scanner spatial grid and calculates SRP-PHAT beamforming responses.
+    Computes cross-spectral beamforming and Time Difference of Arrival (TDOA) 
+    steering vectors for a microphone pair across a 3D target spatial grid.
     """
-    def __init__(self, mic1: Mic, mic2: Mic, scanner: ScannerGrid):
+
+    def __init__(self, 
+                 mic1: Mic, 
+                 mic2: Mic, 
+                 grid: np.ndarray,
+                 fsample: int = config.AUDIO_SAMPLING_RATE_HZ,
+                 vsound: float = config.SOUND_VELOCITY_MPS,
+                 samples: int = config.AUDIO_SIZE,
+                 freq_low_const: float = config.LOW_FREQ_CUTOFF):
         """
-        :param mic1: First physical Mic instance.
-        :param mic2: Second physical Mic instance.
-        :param scanner: ScannerGrid instance containing directional unit vectors.
+        Initialize microphone pair physical properties, sample parameters, and steering vectors.
+
+        Parameters:
+            mic1 (Mic): First microphone instance in the array pair.
+            mic2 (Mic): Second microphone instance in the array pair.
+            grid (np.ndarray): Target 3D spatial grid coordinates of shape (H, W, 3).
+            fsample (int): Audio sampling frequency in Hz.
+            vsound (float): Speed of sound propagation in m/s.
+            samples (int): Total audio frame sample length.
+            freq_low_const (float): Constant determining the lower bound cutoff for optimal frequency band selection.
         """
-        self.mic1 = mic1
-        self.mic2 = mic2
-        self.scanner = scanner
+        self._fsample = fsample
+        self._vsound = vsound
+        self._samples = samples
+        self._half_sample = samples // 2
+        self._freq_low_const = freq_low_const
 
-        # Distance vector between the microphone pair: Δr = r1 - r2
-        baseline_vector = mic1.cord - mic2.cord
+        self._mic1 = mic1
+        self._mic2 = mic2
 
-        # Compute theoretical sample delay (tau * Fs) across all spatial grid unit vectors:
-        # tau = (u_dir • Δr) / v_sound
-        # n0 (samples) = tau * Fs
-        n0 = np.dot(scanner.grid, baseline_vector) * FSAMPLE / VSOUND
-
-        # Compute spatial aliasing limits based on maximum baseline delay across grid directions:
-        # Spatial aliasing occurs when phase shift exceeds pi radians.
-        max_n0 = np.max(np.abs(n0))
-        self.bestFreq = [
-            int(SAMPLES / ((2 + FREQ_LOW_CONST) * max_n0)), 
-            int(SAMPLES / (2 * max_n0))
-        ]
-
-        # Precompute spatial steering phase shifts across all grid points and frequency bins:
-        # Steering Phase Matrix: H(u, k) = exp(-j * 2 * pi * k * n0(u) / N)
-        # where k is the FFT bin index, n0(u) is delay in samples, N is SAMPLES count.
-        k = np.arange(HALF_SAMPLE)
-        self.phase_const = np.exp(-1j * 2 * np.pi * np.multiply.outer(n0, k) / SAMPLES)
-
-    def getBeamform(self, bandpass: np.ndarray = None) -> np.ndarray:
-        """
-        Calculates GCC-PHAT cross-power spectral density steered toward all spatial grid points.
+        # 1. Compute time delays (in sample units) for each point on the target grid
+        n = self._get_time_delay(self._mic1.pos, self._mic2.pos, grid)
         
-        :param bandpass: [min_bin, max_bin] FFT bin slice indices.
-        :return: Real component of steered response power across spatial grid cells and selected frequencies.
+        # 2. Pre-calculate steering phase vectors and optimal frequency band limits
+        self._expected_phase = self._get_steering_vector(n)
+        self.best_freq = self._get_best_freq(n)
+
+    def get_beamform(self, bandpass: tuple[int, int]) -> np.ndarray:
         """
-        if bandpass is None:
-            bandpass = np.array([0, HALF_SAMPLE])
-            
-        # Extract active frequency range for normalized phase vectors
-        p1 = self.mic1.X_phase[bandpass[0] : bandpass[1]]
-        p2 = self.mic2.X_phase[bandpass[0] : bandpass[1]]
+        Computes spatial phase-alignment cross-correlation across specified frequency bins.
 
-        # Compute Normalized Generalized Cross-Correlation (GCC-PHAT):
-        # G_phat(f) = X1_phase(f) * conj(X2_phase(f))
-        cross_spectrum = p1 * np.conj(p2)
+        Parameters:
+            bandpass (tuple[int, int]): Low and high frequency bin indices (min_bin, max_bin).
 
-        # Multiply cross-spectrum by precomputed steering phase shifts across grid field:
-        # S(u, f) = G_phat(f) * exp(-j * 2 * pi * f * tau(u))
-        beamform = cross_spectrum[np.newaxis, np.newaxis, :] * self.phase_const[:, :, bandpass[0] : bandpass[1]]
+        Returns:
+            np.ndarray: Normalized phase coherence intensity response scaled to [0, 1].
+        """
+        # Calculate complex cross-spectral density (CSD) phase between mic signals: S1 * S2*
+        cross_spectrum = self._mic1.phase * np.conj(self._mic2.phase)
         
-        # Take real component corresponding to phase alignment / constructive interference
-        return np.real(beamform)
+        # Multiply CSD phase with theoretical delay phase shifts across selected frequency band
+        beamform = cross_spectrum[np.newaxis, np.newaxis, bandpass[0] : bandpass[1]] * self._expected_phase[:, :, bandpass[0] : bandpass[1]]        
+        
+        # Extract real phase alignment and normalize cosine range [-1, 1] to probability range [0, 1]
+        return (np.real(beamform) + 1) / 2
+
+    def _get_time_delay(self, pos1: np.ndarray, pos2: np.ndarray, grid: np.ndarray) -> np.ndarray:
+        """
+        Computes TDOA (in sample units) between two microphones for all grid coordinates.
+
+        Returns:
+            np.ndarray: Matrix of shape (H, W) containing TDOA values in discrete sample units.
+        """
+        # 1. Calculate Euclidean distance vectors along spatial coordinate axis (axis=-1)
+        dist1 = np.linalg.norm(grid - pos1, axis=-1)
+        dist2 = np.linalg.norm(grid - pos2, axis=-1)
+
+        # 2. Compute TDOA in samples across full spatial grid: delta_samples = (d2 - d1) / vsound * fsample
+        return (dist2 - dist1) * (self._fsample / self._vsound)
+
+    def _get_steering_vector(self, n: np.ndarray) -> np.ndarray:
+        """
+        Generates complex exponential phase shift steering matrix per spatial grid coordinate.
+
+        Returns:
+            np.ndarray: Complex matrix of shape (H, W, positive_frequency_bins).
+        """
+        k = np.arange(self._half_sample)
+        # Phase shift formula: exp(-j * 2 * pi * delay_samples * bin_index / total_samples)
+        return np.exp(-1j * 2 * np.pi * n[:, :, np.newaxis] * k / self._samples)
+
+    def _get_best_freq(self, n: np.ndarray) -> tuple[int, int]:
+        """
+        Determines spatial anti-aliasing bounds (Nyquist-spatial cutoff) based on maximum delay.
+
+        Returns:
+            tuple[int, int]: Frequency bin index range (low_bin_index, high_bin_index).
+        """
+        max_n = np.max(np.abs(n))
+        # Compute frequency bounds to avoid spatial phase wrapping (grating lobes)
+        best_freq = (
+            int(self._samples / ((2 + self._freq_low_const) * max_n)), 
+            int(self._samples / (2 * max_n))
+        )
+        return best_freq
