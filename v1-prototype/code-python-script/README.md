@@ -5,12 +5,12 @@ The main purpose of this Python script is to take raw audio data from the microp
 ## 1. Fourier Transform
 First, we smooth the raw audio frames using a Hamming window so the edges don't cause spectral artifacts. Then, we convert the audio from the time domain into individual pitch frequencies (the frequency domain).
 
-$$X(k) = \text{FFT}\Big(x[n] \times \text{HammingWindow}[n]\Big)$$
+$$X(f) = \text{FFT}\Big(x(t) \times \text{HammingWindow}(t)\Big)$$
 
 ## 2. PHAT
 With four microphones in a square, there are 6 unique pairs to cross-examine: (M1–M2), (M1–M3), (M3–M4), (M4–M2), (M2–M3), and (M4–M1). To prevent spatial aliasing (ghost sounds), we apply $\text{Bandpass}(k)$ based on the physical distance between the mics. We then test how well the measured phase aligns with the expected phase for every $(x, y)$ pixel coordinate using a Steering Vector. The result is a confidence score between $0$ and $1$ indicating whether frequency $k$ originates from $(x, y)$.
 
-$$\text{PairBeamform}(x, y, k) = \text{RealPart}\left( X_{1,\text{phase}}(k) \times \overline{X_{2,\text{phase}}(k)} \times \text{Bandpass}(k) \times \text{SteeringVector}(x, y, k) \right)$$
+$$\text{PairBeamform}(x, y, f) = \frac{\operatorname{Re}\left( X_{1,\text{phase}}(f) \times \overline{X_{2,\text{phase}}(f)} \times \text{Bandpass}(f) \times \text{SteeringVector}(x, y, f) \right) + 1}{2}$$
 
 Note: The SteeringVector is a formula that predicts the exact travel time delay for a sound wave hitting each microphone pair from any given horizontal $(x)$ and vertical $(y)$ angle.
 
