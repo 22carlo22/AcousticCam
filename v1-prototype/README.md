@@ -3,9 +3,12 @@
 This project is a cheap, DIY acoustic camera made with ESP32 and just 4 mics. The ESP32 streams raw audio and video over Wi-Fi to a computer running a custom Python script, which handles all the math and draws the sound heatmap. Instead of using pre-made beamforming libraries, I built the DSP code from scratch to learn how it works under the hood. Doing it this way gives me a clear blueprint to optimize the math and translate everything into C++ directly on the [ESP32 later on](../v2-standalone). 
 
 # Updates
-1. I added a simple user interface to tweak settings on the fly. You can set the frequency range to target specific sounds, adjust the smooth setting to stop the heatmap from flickering, tweak the blob control to sharpen the contrast, and turn on the focus feature to restrict sound detection to a small area in the middle of the camera frame.
-2. I ditched the slow USB serial wire for audio and stopped routing camera video through my home Wi-Fi network. Now, the ESP32 operates as its own standalone Wi-Fi hotspot (SoftAP). My laptop connects directly to it, streaming both audio and video wirelessly with almost zero lag.
-3. I simplified the math and cut out the unnecessary noise calibration. In addition, the script only calculates frequencies within the selected bandpass filter range instead of the whole spectrum. Ignoring those extra frequency bins saves a ton of processing power, so I can crank up the heatmap resolution without affecting the frame rate.
+1. Improved sound source detection:
+- I added a simple CLEAN algorithm to uncover primary sound sources masked by loud noise, coherence, or echoes.
+- the frequency resolution (how selectively the system differentiates acoustic pitches) can now easily be adjusted and increased to help isolate local sources.
+- it now accounts for curved sound waves rather than planar ones to consider nearby audio sources.
+- fixed a heatmap misalignment issue caused by a discrepancy between the OV3660 camera specs and the Python script's camera configuration 
+2. Increased ESP32 data throughput. Audio and camera feeds now stream in parallel rather than sequentially. 
 
 # Results
 
