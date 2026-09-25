@@ -20,4 +20,15 @@ Once the basic math was proven, my next goal was to split the sound processing s
 
 https://github.com/user-attachments/assets/3a1db111-f592-4701-8f68-1e2bb4d3ebd6
 
+## August, 2026
+- I added a simple user interface to tweak settings on the fly. You can set the frequency range to target specific sounds, adjust the smooth setting to stop the heatmap from flickering, tweak the blob control to sharpen the contrast, and turn on the focus feature to restrict sound detection to a small area in the middle of the camera frame.
+- I ditched the slow USB serial wire for audio and stopped routing camera video through my home Wi-Fi network. Now, the ESP32 operates as its own standalone Wi-Fi hotspot (SoftAP). My laptop connects directly to it, streaming both audio and video wirelessly with almost zero lag.
+- I simplified the math and cut out the unnecessary noise calibration. In addition, the script only calculates frequencies within the selected bandpass filter range instead of the whole spectrum. Ignoring those extra frequency bins saves a ton of processing power, so I can crank up the heatmap resolution without affecting the frame rate.
 
+<img width="314" height="241" alt="633192145-bb8039ad-2e64-4c38-866b-16299a09d431" src="https://github.com/user-attachments/assets/ed97c11a-fd8e-4534-9170-7b083b882368" />
+<img width="318" height="241" alt="633192147-0dcda060-4de1-4082-96f7-9b8f787db125" src="https://github.com/user-attachments/assets/ec6d0dba-7ab4-45c4-86c8-88526f2de84c" />
+<img width="315" height="232" alt="633192149-01dfaaf2-2a56-4211-90cd-871e03cf4c6a" src="https://github.com/user-attachments/assets/43826d0f-e4c4-4872-9b52-db9f6d25c0fd" />
+
+https://github.com/user-attachments/assets/a9d03c2f-2231-4bc3-bd4d-580f50ba290a
+https://github.com/user-attachments/assets/e446b13b-1a56-4c70-a578-c66757d4eb09
+https://github.com/user-attachments/assets/015eb1a7-138d-4f21-a774-8aaea2d0ba44
