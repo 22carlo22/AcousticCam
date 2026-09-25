@@ -1,8 +1,13 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+/**
+ * @file Constants.h
+ * @brief System-wide hardware pin mappings, sampling configurations, and network settings.
+ */
+
 // ==========================================
-// Camera Hardware & Pin Configuration (DVP)
+// Camera 
 // ==========================================
 
 #define PWDN_GPIO_NUM    -1       // Power Down pin (disabled / pulled down externally)
@@ -27,24 +32,25 @@
 #define PCLK_GPIO_NUM    13       // Pixel Data Clock output from camera
 
 // ==========================================
-// Dual I2S Microphone Array Pin Mapping
+// I2S Microphone Array Pin Mapping
 // ==========================================
 #define AUDIO_SCK        39       // Shared Bit Clock (BCLK) driven by I2S_NUM_0 master
 #define AUDIO_WS         40       // Shared Word Select / Frame Sync (LRCLK) driven by I2S_NUM_0
 #define AUDIO_SD1        41       // Data line 1 for Microphones 1 & 2 (I2S_NUM_0)
 #define AUDIO_SD2         1       // Data line 2 for Microphones 3 & 4 (I2S_NUM_1)
 
-#define AUDIO_SAMPLES  1024       // Number of audio sampling points per capture block window
-#define AUDIO_FREQ    44100       // PCM sampling rate (Hz)
+#define AUDIO_FREQ_HZ    30000    // Audio sampling frequency (Hz)
+#define AUDIO_SAMPLES    512      // Number of audio samples per DMA buffer transfer
 
 // ==========================================
 // Wi-Fi Access Point Configuration
 // ==========================================
 #define WIFI_NAME       "Esp32" 
-#define WIFI_PASSWORD   ""        // Open AP configuration
+#define WIFI_PASSWORD   ""              // Leave blank for open network access
+#define IP              "192.168.4.1"   // Static local IP address assigned to ESP32 AP
 
 // Network Data Streaming Ports
-#define AUDIO_PORT    5010        // Outgoing UDP target port for 4-channel audio stream
-#define CAM_PORT      5011        // Outgoing UDP target port for JPEG video frame stream
+#define AUDIO_PORT      5010            // Target TCP port for 4-channel audio stream
+#define CAM_PORT        5011            // Target TCP port for JPEG video frame stream
 
-#endif
+#endif // CONSTANTS_H

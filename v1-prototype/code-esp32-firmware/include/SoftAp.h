@@ -3,52 +3,70 @@
 
 #include <Arduino.h>
 #include <WiFi.h>
-#include <WiFiUdp.h>
 #include <unordered_map>
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
 
 /**
- * @brief Manages the ESP32 Wi-Fi Access Point (SoftAP) and streams fragmented UDP packet frames for a single client.
+ * @brief Thread-safe SoftAP streaming class supporting multi-port TCP transmission.
+ *
+ * Configures an ESP32 Wi-Fi Access Point and manages multiple persistent TCP server
+ * endpoints. Utilizes FreeRTOS semaphores to ensure thread-safe socket reads and writes 
+ * across concurrent streaming tasks. Designed for single-client high-throughput streaming.
  */
 class SoftAp {
-    private:
-        IPAddress local_IP{192, 168, 4, 1};  // Access point local gateway address
-        IPAddress gateway{192, 168, 4, 1};  
-        IPAddress subnet{255, 255, 255, 0};
+private:
+    const char* ssid;
+    const char* password;
+    const char* ip;
+    
+    /**
+     * @brief Container managing persistent socket server and client references per port.
+     */
+    struct PortSession {
+        WiFiServer* server = nullptr;
+        WiFiClient* client = nullptr;
+    };
 
-        static const uint16_t UDP_PACKET_MAX = 1400; // Payload size cap per UDP fragment (under standard 1500 MTU)
-        const char* TARGET_IP = "192.168.4.2";       // Fixed destination client address (laptop/host PC)
+    /** Map pairing port numbers to active TCP socket sessions. */
+    std::unordered_map<uint16_t, PortSession> sessions;
+    
+    /** FreeRTOS mutex synchronizing network calls across concurrent task routines. */
+    SemaphoreHandle_t net_mutex;
 
-        const char* ssid;
-        const char* password;
-        std::unordered_map<uint16_t, WiFiUDP*> ports; // Registry mapping port numbers to active socket instances
+public:
+    /**
+     * @brief Constructs a SoftAp instance and initializes the thread synchronization mutex.
+     * 
+     * @param ssid AP Network SSID string.
+     * @param password AP Network WPA2 password string.
+     * @param ip Local static IP address string (also serves as default gateway).
+     */
+    SoftAp(const char* ssid, const char* password, const char* ip);
 
-    public:
-        /**
-         * @brief Constructs a SoftAp manager instance.
-         * @param ssid AP Network SSID name.
-         * @param password AP Network password.
-         */
-        SoftAp(const char* ssid, const char* password);
+    /**
+     * @brief Configures static IP settings and starts the Wi-Fi Access Point broadcast.
+     */
+    void begin();
 
-        /**
-         * @brief Configures interface subnet, assigns static IP, and begins SoftAP beacon broadcasting.
-         */
-        void begin();
+    /**
+     * @brief Initializes a TCP server on a target port and binds a session entry.
+     * 
+     * @param port_num Target network port to open for client connections.
+     */
+    void startPort(uint16_t port_num);
 
-        /**
-         * @brief Dynamically allocates and binds a UDP socket to a target port number.
-         * @param port_num Port index to open and bind.
-         */
-        void startPort(uint16_t port_num);
-        
-        /**
-         * @brief Slices raw binary payloads into structured MTU fragments and streams them over UDP.
-         * @param port_num Target destination UDP port mapped in registry.
-         * @param id Sequential frame identifier counter.
-         * @param data Pointer to raw payload array.
-         * @param len Total length of binary payload in bytes.
-         */
-        void send(uint16_t port_num, uint8_t id, uint8_t data[], uint16_t len);
+    /**
+     * @brief Transmits a 2-byte length-prefixed payload frame over a designated TCP port.
+     * 
+     * Handles automatic client connection polling, stale socket cleanup, and 
+     * low-latency byte transmission under mutex lock protection.
+     * 
+     * @param port_num Target port number corresponding to an active session.
+     * @param data Pointer to raw byte array payload.
+     * @param len Number of bytes to transmit.
+     */
+    void send(uint16_t port_num, uint8_t data[], uint16_t len);
 };
 
-#endif
+#endif // SOFTAP_H
