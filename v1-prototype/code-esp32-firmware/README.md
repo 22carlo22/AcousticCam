@@ -29,10 +29,11 @@ This ESP32 handles three main tasks:
 # How does it work?
 Here is the basic data flow,
 
-<img width="832" height="322" alt="flow drawio (2)" src="https://github.com/user-attachments/assets/bbef40de-3260-43a3-842c-52453bb64119" />
+<img width="832" height="322" alt="flow drawio (3)" src="https://github.com/user-attachments/assets/56f593eb-0109-4436-9fbc-ee9c6f66714b" />
 
-First, the ESP32 splits the microphones into two pairs. Microphones 1 and 2 connect to the first audio channel (I2S0), and Microphones 3 and 4 connect to the second (I2S1). To keep all four microphones perfectly synchronized, I2S0 acts as the master clock and drives the timing for I2S1.
+First, the ESP32 splits the microphones into two pairs. Microphones 1 and 2 connect to the first audio interface (I2S0), and Microphones 3 and 4 connect to the second (I2S1). To keep all four microphones perfectly synchronized, I2S0 acts as the master clock and drives the timing for I2S1.
 
-Meanwhile, the OV3660 camera is set to a low resolution (QVGA) and uses JPEG compression. Shrinking the size like this lets the ESP32 send image frames much faster (although with lower quality), keeping the FPS high for the python script.
+Meanwhile, the OV3660 camera is set to a lower resolution (QVGA) and uses JPEG compression. Shrinking the frame size this way lets the ESP32 stream video much faster, keeping a high FPS for the Python script.
 
-Finally, the ESP32 packages the combined audio samples [M1, M2, M3, M4,...] and the camera frames into UDP packets. Running as a Wi-Fi Access Point (SoftAP), it streams these packets over designated ports as soon as a device connects, alternating sequentially between sending audio and image data.
+Finally, the ESP32 packages the interleaved audio samples [M1, M2, M3, M4, ...] and camera frames into data payloads using the TCP protocol. Running as a Wi-Fi Access Point, it streams this data over designated ports as soon as a device connects.
+
