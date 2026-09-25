@@ -4,11 +4,11 @@ This project is a cheap, DIY acoustic camera made with ESP32 and just 4 mics. Th
 
 # Updates
 1. Improved sound source detection:
-- I added a simple CLEAN algorithm to uncover primary sound sources masked by loud noise, coherence, or echoes.
-- the frequency resolution (how selectively the system differentiates acoustic pitches) can now easily be adjusted and increased to help isolate local sources.
-- it now accounts for curved sound waves rather than planar ones to consider nearby audio sources.
-- fixed a heatmap misalignment issue caused by a discrepancy between the OV3660 camera specs and the Python script's camera configuration 
-2. Increased ESP32 data throughput. Audio and camera feeds now stream in parallel rather than sequentially. 
+  - I added a simple CLEAN algorithm to uncover primary sound sources masked by loud noise, coherence, or echoes
+  - the frequency resolution (how selectively the system differentiates acoustic pitches) can now easily be adjusted and increased to help isolate local sources
+  - it now accounts for curved sound waves rather than planar ones to consider nearby audio sources
+  - fixed a heatmap misalignment issue caused by a discrepancy between the OV3660 camera specs and the Python script's camera configuration 
+2. Increased ESP32 data throughput. Audio and camera feeds now stream in parallel rather than sequentially.
 
 # Results
 
