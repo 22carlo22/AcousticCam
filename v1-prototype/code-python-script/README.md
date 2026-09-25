@@ -24,6 +24,15 @@ This changes how much audio data gets fed into the beamformer. Increasing this g
 
 <img width="618" height="232" alt="Screenshot 2026-09-25 192848" src="https://github.com/user-attachments/assets/ed033f1d-4161-4815-9be2-08d64beaa317" />
 
+# Script Architecture
+<img width="1460" height="612" alt="AcoustiCamScriptArchitecture drawio" src="https://github.com/user-attachments/assets/0449f374-e8ad-4761-9836-250c62c35405" />
+
+If you plan to modify the codebase, reviewing the architecture diagram above can help you understand how the primary components interact at a high level. The script processes three main inputs: JPEG images and 32-bit audio streams sent from the ESP32 over TCP via two TCPClient.py readers (cam_reader and audio_reader), along with user adjustments from Tkinter GUI sliders.
+
+To keep the UI responsive, heavy spatial beamforming calculations are offloaded to CalculateThread.py. Inside this thread, SlidingAudio.py holds the latest audio samples in a fixed-size FIFO buffer. Four Mic.py instances then transform this audio from the time domain into the frequency domain. Next, ArrayMics.py uses PairMics.py and ScannerGrid.py to run beamforming on the channels, producing a normalized matrix that shows sound confidence across (x, y) coordinates. Finally, Heatmap.py converts this matrix into an RGB overlay, while a thread-safe cmd_buffer applies any slider changes from the GUI directly to the beamforming and heatmap calculations.
+
+In the final rendering stage, render_live_frame merges the video frame from cam_reader with the RGB acoustic overlay from Heatmap.py. The main update_loop calls this function periodically based on dynamic delay timing managed by FpsControl.py, pushing the final blended frame to the Tkinter window for display.
+
 # How does it work? 
 ## 1. Fourier Transform
 First, we smooth the raw audio frames using a Hamming window so the edges don't cause spectral artifacts. Then, we convert the audio from the time domain into individual pitch frequencies (the frequency domain).
