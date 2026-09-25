@@ -14,16 +14,15 @@ The main purpose of this Python script is to take raw audio data from the microp
 # About config.py
 Everything you need to tweak is in config.py. While there are plenty of settings, these are the two main ones you’ll want to mess with:
 
-1. SCANNER_QUALITY
+## 1. SCANNER_QUALITY
 This adjusts the heatmap resolution. Turn it up, and you get a sharper, more detailed image.
 
 <img width="614" height="234" alt="Screenshot 2026-09-25 192812" src="https://github.com/user-attachments/assets/6d9a7088-e16a-4796-80bf-3241b4a392a4" />
 
-3. AUDIO_SIZE
+## 2. AUDIO_SIZE
 This changes how much audio data gets fed into the beamformer. Increasing this gives the algorithm more frequencies to analyze, making it much better at pinpointing specific sound sources (especially when CLEAN is turned on).
 
 <img width="618" height="232" alt="Screenshot 2026-09-25 192848" src="https://github.com/user-attachments/assets/ed033f1d-4161-4815-9be2-08d64beaa317" />
-
 
 # How does it work? 
 ## 1. Fourier Transform
