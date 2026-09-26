@@ -82,7 +82,7 @@ That approach works for short, transient noises, like a quick beep or a clap, wh
 - [Microphone Array Diagram](code-esp32-firmware/README.md#circuit-diagram)
 - [Math Stuff Used for Beamforming](code-python-script/README.md#how-does-it-work)
 - [How to Use the Python Script](code-python-script/README.md#how-to-use)
-- [How to Increase Heatmap Resolution](code-python-script/README.md#about-config.py)
+- [How to Increase Heatmap Resolution](code-python-script/README.md#about-configpy)
 - [Previous Prototypes](logs/README.md)
 
 
